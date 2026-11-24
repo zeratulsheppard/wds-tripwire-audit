@@ -34,7 +34,7 @@ app.get('/api/users', (req, res) => {
 });
 
 app.get('/api/stats', (_req, res) => {
-  res.json(db.stats());
+  res.json({ ...db.stats(), poll: poller.getPollState() });
 });
 
 app.use(

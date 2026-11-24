@@ -6,6 +6,17 @@ const USER_DELETE_GRACE_MINUTES = Number(process.env.USER_DELETE_GRACE_MINUTES |
 const RETENTION_DAYS = Number(process.env.RETENTION_DAYS || 30);
 
 let isPrimed = db.getAllSnapshotRows().length > 0;
+let lastTickAt = null;
+let nextTickAt = null;
+
+function getPollState() {
+  return {
+    intervalMs: POLL_INTERVAL_MS,
+    lastTickAt,
+    nextTickAt,
+    primed: isPrimed,
+  };
+}
 
 function parseTripwireTimestamp(ts) {
   if (!ts) return null;
@@ -110,10 +121,12 @@ function start() {
     } catch (err) {
       console.error('[poller] tick failed:', err);
     } finally {
+      lastTickAt = new Date().toISOString();
+      nextTickAt = new Date(Date.now() + POLL_INTERVAL_MS).toISOString();
       setTimeout(loop, POLL_INTERVAL_MS);
     }
   };
   loop();
 }
 
-module.exports = { start };
+module.exports = { start, getPollState };

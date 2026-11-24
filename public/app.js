@@ -39,6 +39,25 @@ function params(form) {
   return out;
 }
 
+let lastStats = null;
+
+function renderStats() {
+  if (!lastStats) return;
+  const poll = lastStats.poll || {};
+  let nextLine = 'Next poll: <b>—</b>';
+  if (poll.nextTickAt) {
+    const remaining = Math.max(0, Math.round((new Date(poll.nextTickAt) - Date.now()) / 1000));
+    nextLine = `Next poll in <b>${remaining}s</b>`;
+  } else if (poll.primed === false) {
+    nextLine = 'Next poll: <b>priming…</b>';
+  }
+  $('#stats').innerHTML = `
+    <div>Total events (30d): <b>${lastStats.total ?? 0}</b></div>
+    <div>Tracked sigs: <b>${lastStats.snapshotSize ?? 0}</b></div>
+    <div>${nextLine}</div>
+  `;
+}
+
 async function refresh() {
   const p = params($('#filters'));
   const [events, users, stats] = await Promise.all([
@@ -47,11 +66,8 @@ async function refresh() {
     fetch('/api/stats').then((r) => r.json()),
   ]);
 
-  $('#stats').innerHTML = `
-    <div>Total events (30d): <b>${stats.total ?? 0}</b></div>
-    <div>Tracked sigs: <b>${stats.snapshotSize ?? 0}</b></div>
-    <div>Oldest: <b>${stats.oldest ? fmtWhen(stats.oldest) : '—'}</b></div>
-  `;
+  lastStats = stats;
+  renderStats();
 
   $('#users').innerHTML = (users.users || [])
     .map(
@@ -92,3 +108,4 @@ $('#reset').addEventListener('click', () => {
 
 refresh();
 setInterval(refresh, 30_000);
+setInterval(renderStats, 1000);

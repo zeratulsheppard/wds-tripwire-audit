@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tripwire Deletion Audit — WDS</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <img class="logo" alt="" src="https://images.evetech.net/alliances/99006319/logo?size=64" />
+    <div>
+      <h1>Tripwire Deletion Audit</h1>
+      <p class="sub">User-fired signature deletions · 30-day retention</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Filters</h2>
+      <form id="filters" class="filters">
+        <label>User <input type="text" name="user" placeholder="character name" /></label>
+        <label>System <input type="text" name="system" placeholder="e.g. Jita" /></label>
+        <label>Since <input type="datetime-local" name="since" /></label>
+        <label>Until <input type="datetime-local" name="until" /></label>
+        <button type="submit">Apply</button>
+        <button type="button" id="reset">Reset</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Per-user totals</h2>
+      <table class="t-users">
+        <thead><tr><th>Character</th><th class="num">Deletions</th></tr></thead>
+        <tbody id="users"></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Events</h2>
+      <table class="t-events">
+        <thead>
+          <tr>
+            <th>When (UTC)</th>
+            <th>User</th>
+            <th>System</th>
+            <th>Sig</th>
+            <th>Type</th>
+            <th>WH</th>
+            <th class="num">Life left</th>
+            <th>Created by</th>
+          </tr>
+        </thead>
+        <tbody id="events"></tbody>
+      </table>
+      <p class="hint" id="eventsHint"></p>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

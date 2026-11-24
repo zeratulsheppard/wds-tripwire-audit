@@ -1,0 +1,17 @@
+[Unit]
+Description=WDS Tripwire deletion audit
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/wds-tripwire-audit
+EnvironmentFile=/opt/wds-tripwire-audit/.env
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
